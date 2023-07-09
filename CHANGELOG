@@ -1,0 +1,159 @@
+# Changelog
+
+
+
+## [0.4.0] 2023-07-07
+
+### Added
+
+- A system message for creating PowerPoint presentations using Marp
+- Ability to refuse commands ChatGPT wants to run with a message to ChatGPT
+- Improved cross-platform support
+- Creation of a project outline in the beginning of the project. Can be skipped with `--no-outline` or used automatically with `--use-outline`
+- `--git` flag to initialize a Git repository in the project automatically and commit every task. Commit message generation can be disabled with `--no-commit-msg` if you don't want to generate a commit message with GPT
+- `--simple` flag for running simple prompts quickly
+- `--no-cmd` flag to disable the `run_cmd` function from ChatGPT
+- `--zip` flag to create a zip file of the project instead of writing files directly (`--no-cmd` is added automatically). When this flag is used, files are created only in memory and saved to a zip file in the end. An optional filename or full path of a zip file can be provided.
+- Token saver module that redacts redundant file read and write messages from the message history. The "savings rate" of the token saver can be changed by changing `--token-saver-level` (lower number saves more, default 3).
+
+### Changed
+
+- Changed default model to `gpt-3.5-turbo-16k-0613"
+- Updated system messages
+- Improved tasklist creation
+- Moved modules to `modules` directory
+
+### Removed
+
+- Disabled `append_file` and `replace_text` functions because GPT used them wrong often
+
+## [0.3.0]
+
+### Added
+
+- Ability to set default command line flags in `config.json`
+- `--step-by-step` flag to run tasklist step by step as separate messages to GPT
+- Ability to modify original prompt iteratively with GPT
+- Confirmation before detecting custom system message with GPT
+- Ability to skip a tasklist entirely
+- System message for PHP websites
+
+### Fixed
+
+- Enforcement of the `--questions` flag even when GPT responds with more questions
+- Exception when no output was generated from a failed terminal command
+- System message was detected again for each version when using `--versions`
+- Initial clarifying questions now are added to each version when using `--versions`
+- The tasklist is now added to each version when using `--versions`
+
+### Changed
+
+- By default, GPT-AutoPilot will ask whether you want to go through the tasklist step by step or as a single message. You can change this behavior with the flags `--step-by-step` and `--single-tasklist`
+- Changed the prompt for the system prompt detector
+- Clarification questions and their answers are now added to message history as actual assistant/user messages instead of a combined Q/A message.
+- Only the final tasklist after changes is kept in the message history
+- Unanswered clarifying questions are omitted from the message history and not sent to GPT
+- Default temperature from `0.9` to `1.0`
+
+## [0.2.0] 2023-06-29
+
+### Added
+
+- Ability to run the script from outside the script directory
+- More command line flags:
+    - `--dir [DIRECTORY]` to use a custom project folder for reading/writing instead of the `code` folder
+    - `--create-dir` to create project directory automatically if it doesn't exist
+    - `--prompt-file [FILENAME]` to load the first prompt from a file
+    - `--allow-cmd [EXACT_COMMAND]` to allow specific terminal commands to be run without confirmation
+    - `--one-task` to end script after the first 'task is finished' summary
+    - `--max-tokens [NUMBER]` to limit the maximum number of tokens the project can use
+    - `--max-price [NUMBER]` to limit the maximum amount of money the project can use
+    - `--continue` to continue automatically if ChatGPT responds without a function call
+    - `--model [MODEL_NAME]` to set the ChatGPT API model to be used
+- GPT-AutoPilot will now ask 5 questions about the project in the beginning, before starting to code. The behavior can be changed with the following command line flags:
+    - `--no-questions` to not ask any questions
+    - `--questions [NUMBER]` to set number of questions to ask
+- GPT-AutoPilot now creates a task list for the project and runs through the list one by one. You can use the following command line flags to change the behavior:
+    - `--no-tasklist` to not generate a task list at all
+    - `--single-tasklist` to send the whole tasklist to ChatGPT at once
+- Custom system messages and checklists for specific projects. A fitting system message from the `prompts` folder is picked automatically and can be changed with these command line flags:
+    - `--system [SYSTEM_MESSAGE_SLUG]` to set which system message from `prompts` folder is used
+    - `--use-system` to not ask for confirmation before using an automatically detected system message
+    - `--do-checklist` to do all tasks in the checklist automatically after the project is finished
+    - `--no-checklist` to not use any checklist
+- Rudamentary tests for sample projects
+
+### Fixed
+
+- Issues with GPT-3.5 model
+- Fixed and "fixed" `pyright` errors
+
+### Changed
+
+- Default temperature from `1.0` to `0.9`
+
+## [0.1.3] 2023-06-25
+
+### Added
+
+- Ability to run terminal commands asynchronously
+- Token count and price calculation
+
+### Fixed
+
+- The `cd code/<base_dir>;` command before running a terminal command was missing the `/` and therefore didn't work.
+- Conversation history filenames in `history` folder are now incremented properly, even if some conversations are deleted
+- Give error to GPT if it tries to replace text in a file that doesn't have the given text
+- Create directory did not work because `directory` was passed to `codedir()` as a string instead of a variable
+- Raise TypeErrors and NameErrors when calling OpenAI API
+
+### Changed
+
+- Version folder structure is now `versions/<incrementing_number>/v[1..]` as opposed to previous `versions/code_<timestamp>_v[1..]`.
+- Formatted the output of the script nicer
+
+## [0.1.2] 2023-06-24
+
+### Fixed
+
+- Issue #6: Iterating over a selected version didn't preserve its message history
+- Issue #7: The `replace_text` function given to GPT didn't work with code
+
+### Changed
+
+- The `replace_text` function no longer uses regex because GPT can not properly format regex that includes code
+
+## [0.1.1] 2023-06-23
+
+### Added
+
+- Support for Windows
+- PyInstaller scripts for creating portable versions
+
+### Fixed
+
+- Script sometimes got stuck at "Waiting for ChatGPT..." when the GPT API stalled. Added `request_timeout` parameter to fix this (30 seconds)
+
+## [0.1.0] 2023-06-23
+
+### Added
+
+- Better support for GPT-3.5 models
+- More command line arguments
+    - `--conv` to set previous conversation ID to continue from
+    - `--prompt` to set initial prompt
+    - `--delete` to delete existing code if present
+    - `--versions` to create multiple versions of the same project at once
+    - `--temp` to set temperature of GPT API
+    - `--better` to automatically make prompt better with GPT
+    - `--not-better` to not ask to make prompt better with GPT
+    - `--ask-better` to ask for confirmation of using better prompt when automatically making better prompt
+    - `--better-versions` to create a separate better prompt for every version
+
+### Fixed
+
+- API loop when invalid model was used in settings (issue #3)
+
+### Changed
+
+- Conversation ID is now set with `--conv` flag, instead of the first command line argument

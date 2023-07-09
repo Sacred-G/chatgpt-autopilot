@@ -1,0 +1,10 @@
+__pycache__
+.api_key
+config.json
+old_demos/
+code/
+history/
+versions/
+token_usage.json
+tests/results/
+projects/
