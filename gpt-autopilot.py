@@ -948,7 +948,7 @@ print_model_info()
 if "prompt" in cmd_args.args:
     prompt = cmd_args.args["prompt"]
 else:
-    prompt = input("GPT: What would you like me to do?\nYou: ")
+    prompt = input("GPT: What would you like me to do for you Steven?\nYou: ")
     print()
 
 # INITIALIZE GIT
