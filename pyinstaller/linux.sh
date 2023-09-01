@@ -2,7 +2,7 @@
 cd "$(dirname "$0")"
 
 # clone and cd into repo
-git clone https://github.com/unconv/gpt-autopilot.git
+git clone https://github.com/sacred-g/gpt-autopilot.git
 cd gpt-autopilot
 
 # run pyinstaller
